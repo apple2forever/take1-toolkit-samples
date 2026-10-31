@@ -25,6 +25,18 @@ RUN JOYSTICK CONTROL
 Apple II 에뮬레이터 또는 실제 Apple II에서 사용합니다. 언어 카드 RAM을 포함한
 64KB가 필요합니다. 조이스틱 예제는 Apple II의 paddle 0 가로축을 사용합니다.
 
+## 실행 화면
+
+샘플 디스크를 64K Apple IIe 환경의 MAME에서 실행한 화면입니다.
+
+**SN 씬 재생** — 로고 씬이 끝난 뒤 마지막 화면을 유지합니다.
+
+![SN 씬 재생 완료 화면](screenshots/scene.png)
+
+| 조이스틱 오른쪽 | 조이스틱 왼쪽 |
+|---|---|
+| ![오른쪽으로 달리는 액터](screenshots/joystick-right.png) | ![왼쪽으로 달리는 액터](screenshots/joystick-left.png) |
+
 ## 소스코드
 
 - [SN 재생 어셈블리](samples/scene/sn_sample.s) · [BASIC 로더](samples/scene/hello.bas)
