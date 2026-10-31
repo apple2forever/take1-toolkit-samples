@@ -1,80 +1,84 @@
-# 조이스틱으로 좌우 달리기
+# Running Left and Right with the Joystick
 
-**[전체 어셈블리 소스](thunder_joystick.s)** · **[BASIC 로더](joystick_control.bas)**
+**English** | [한국어](README.ko.md)
 
-샘플 디스크에서 `RUN JOYSTICK CONTROL`을 실행합니다.
+**[Complete assembly source](thunder_joystick.s)** · **[BASIC loader](joystick_control.bas)**
 
-- 조이스틱 왼쪽/오른쪽: 해당 방향을 보며 이동합니다.
-- 중립: 마지막 방향을 유지하고 제자리에서 계속 달립니다.
-- ESC: 텍스트 화면과 BASIC으로 돌아옵니다.
+Run `RUN JOYSTICK CONTROL` from the sample disk.
 
-## BASIC 로더가 하는 일
+- Joystick left/right: face and move in that direction.
+- Centered: keep facing the last direction and continue running in place.
+- ESC: return to the text screen and BASIC.
 
-`HIMEM:8192`로 BASIC 프로그램·변수·문자열을 `$2000` 아래에 두고,
-`T1LC.INSTALL`을 실행하여 스냅샷 렌더러를 언어 카드 상위 RAM에 설치합니다.
-오른쪽·왼쪽 액터 데이터를 준비한 다음 `THUNDER.JOY`를 `$6000`에 로드하고
-`CALL 24576`으로 호출합니다. 어셈블리에서 부를 때는 `JSR $6000`입니다.
+## What the BASIC loader does
 
-| 영역 | 용도 |
+`HIMEM:8192` keeps the BASIC program, variables, and strings below `$2000`.
+The loader runs `T1LC.INSTALL` to install the snapshot renderer in Language Card upper RAM.
+It loads the right- and left-facing actor data, loads `THUNDER.JOY` at `$6000`, and calls it with
+`CALL 24576`. From assembly, the equivalent entry is `JSR $6000`.
+
+| Address range | Purpose |
 |---|---|
-| `$0300–$03CF` | 렌더러 호출 게이트와 파라미터 |
-| `$0800–$1FFF` | BASIC 프로그램·변수·문자열 |
-| `$2000–$3FFF` | HGR 화면 1 |
-| `$4000–$5FFF` | HGR 화면 2 |
-| `$6000–$6376` | 조이스틱 프로그램, 887바이트 |
-| `$6F00–$7F94` | 왼쪽 액터 `AC.THUNDER LEFT` |
-| `$8000–$8F88` | 오른쪽 액터 `AC.THUNDER RUN` |
-| LC bank 1 `$D000–$D8FF` | 렌더러와 작업 영역 |
+| `$0300–$03CF` | Renderer call gateway and parameters |
+| `$0800–$1FFF` | BASIC program, variables, and strings |
+| `$2000–$3FFF` | HGR page 1 |
+| `$4000–$5FFF` | HGR page 2 |
+| `$6000–$6376` | Joystick program, 887 bytes |
+| `$6F00–$7F94` | Left-facing actor, `AC.THUNDER LEFT` |
+| `$8000–$8F88` | Original right-facing actor, `AC.THUNDER RUN` |
+| LC bank 1 `$D000–$D8FF` | Renderer and workspace |
 
-설치기의 임시 `$6000` 영역은 설치가 끝난 뒤 조이스틱 프로그램이 재사용합니다.
-코드는 `JSR $0300`으로 렌더러를 부릅니다. 상위 RAM 뱅킹은 호출 게이트가 처리합니다.
+After installation, the joystick program reuses the installer's temporary area at `$6000`.
+The program calls the renderer with `JSR $0300`. The gateway handles upper RAM banking.
 
-## 한 프레임의 흐름
+## One frame of the main loop
 
-소스의 `frame_loop`부터 반복합니다.
+Execution repeats from `frame_loop` in the source.
 
-1. ESC 입력을 확인합니다.
-2. `read_joystick`에서 ROM `PREAD`(`$FB1E`)를 호출합니다. X=0으로 가로축을
-   선택하며 Y로 0–255 범위의 값을 받습니다.
-3. 0–95는 왼쪽, 96–159는 중립, 160–255는 오른쪽으로 처리합니다.
-   좌우 입력에만 `player_x`를 4픽셀 변경하고, 0–210 범위로 제한합니다.
-4. `render_frame`에서 입력과 관계없이 `pose`를 1–12로 순환시킵니다.
-   이 때문에 중립에서도 달리기 모양이 계속 바뀝니다.
-5. 숨겨진 화면의 이전 캐릭터 영역을 지우고 `draw_player`로 현재 포즈를 그립니다.
-6. 완성된 화면을 표시하고, 다음 프레임의 그리기 화면을 바꿉니다.
+1. Check for ESC.
+2. In `read_joystick`, call the ROM `PREAD` routine at `$FB1E`. X=0 selects the horizontal axis;
+   Y returns a value from 0 to 255.
+3. Treat 0–95 as left, 96–159 as centered, and 160–255 as right.
+   Only left/right input changes `player_x`, by 4 pixels, clamped to 0–210.
+4. In `render_frame`, cycle `pose` through 1–12 regardless of joystick input.
+   This keeps the running animation moving while the joystick is centered.
+5. Clear the previous character area on the hidden page, then draw the current pose with `draw_player`.
+6. Display the completed page and select the other page for the next frame.
 
-Take 1의 스냅샷 렌더러는 호출 한 번에 지정한 포즈 하나를 그립니다.
-이 예제에서는 프로그램이 포즈와 좌표를 매번 정합니다. 액터 파일의 명명된 액션이나
-원본 이동량을 실행하는 방식은 아닙니다.
+Take 1's snapshot renderer draws one specified pose per call.
+This sample chooses the pose and position on every frame. It does not execute a named action
+or use the movement deltas stored in the original actor file.
 
-## 화면 1·2를 교대하는 부분
+## Flipping HGR pages 1 and 2
 
-`DRAW_PAGE`(`$E6`)는 **그릴 화면**을 나타냅니다. `$20`이면 화면 1, `$40`이면 화면 2입니다.
+`DRAW_PAGE` at `$E6` selects the **drawing page**: `$20` for page 1, `$40` for page 2.
 
-`clear_band`는 숨겨진 화면의 y=104–163 영역만 지웁니다. 그 뒤 현재 액터를 그리고,
-`$C054`를 읽어 화면 1 또는 `$C055`를 읽어 화면 2를 표시합니다.
+`clear_band` clears only scanlines y=104–163 on the hidden page. After drawing the actor,
+the program reads `$C054` to display page 1 or `$C055` to display page 2.
 
 ```asm
         lda DRAW_PAGE
         eor #$60           ; $20 <-> $40
-        sta DRAW_PAGE      ; 다음에는 반대편 화면에 그린다
+        sta DRAW_PAGE      ; draw on the other page next time
 ```
 
-따라서 표시 중인 화면을 지우는 중간 과정이 보이지 않습니다. 바닥선은 초기화할 때
-두 화면에 한 번씩 그려 놓습니다. 수직 귀선 동기화는 넣지 않아 실행 속도는 환경에 따라 달라집니다.
+The clearing operation stays hidden from view. The floor line is drawn once on both pages
+during initialization. There is no vertical blank synchronization, so playback speed depends on the environment.
 
-## 좌우 방향과 1픽셀 보정
+## Facing direction and the one-pixel adjustment
 
-오른쪽은 원본 `AC.THUNDER RUN`, 왼쪽은 반전한 `AC.THUNDER LEFT`를 선택합니다.
-반전본의 헤더 dx에 +1을 주어 오른쪽으로 1픽셀 시프트했습니다. Apple II 컬러의
-픽셀 위상을 보정하기 위한 값이므로, `use_left`에서 다시 X를 1 빼지 않습니다.
+Right uses the original `AC.THUNDER RUN`; left uses the mirrored `AC.THUNDER LEFT`.
+The mirrored actor's header has dx=+1, shifting it one pixel to the right to adjust the Apple II color phase.
+Do not subtract 1 from X again in `use_left`, as that would undo the adjustment.
 
-이 액터는 검정 배경용이며 모든 NTSC 경계색을 완전히 보존하는 일반 변환은 아닙니다.
+This actor is intended for a black background. The reflection is not a general conversion
+that preserves every NTSC edge color exactly.
 
-## 종료와 응용
+## Returning and adapting the sample
 
-`finish`/`restore`는 텍스트 화면을 복구하고 ZP·X/Y·호출자의 플래그를 복원한 뒤
-RTS로 돌아갑니다. BASIC 로더는 이어서 `BACK TO BASIC`을 출력합니다.
+`finish`/`restore` restore the text screen, zero page, X/Y, and the caller's flags,
+then return with RTS. The BASIC loader continues by printing `BACK TO BASIC`.
 
-이동 속도는 `MOVE_STEP`, 중립 범위는 `JOY_LEFT`/`JOY_RIGHT`, 높이는 `PLAYER_Y`에
-모여 있습니다. 캐릭터 높이를 바꿀 때는 지우는 영역과 바닥선 위치도 함께 검토해야 합니다.
+Movement speed is defined by `MOVE_STEP`, the centered range by `JOY_LEFT`/`JOY_RIGHT`,
+and the vertical position by `PLAYER_Y`. If you change the character's height or vertical position,
+review the cleared area and floor position as well.

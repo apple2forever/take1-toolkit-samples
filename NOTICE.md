@@ -1,26 +1,29 @@
-# 권리 표시
+# Rights and Attribution
 
-이 프로젝트는 Baudville의 공식 배포판이 아닌 독립적인 Take 1 활용 예제입니다.
+**English** | [한국어](NOTICE.ko.md)
 
-## 직접 작성한 부분 — MIT
+This is an independent Take 1 sample project, not an official Baudville distribution.
 
-`samples/`의 어셈블리·BASIC 로더·호출 상수·메모리 설정과 새로 작성한 설명에는
-루트 [LICENSE](LICENSE)의 MIT 조건을 적용합니다.
+## Newly written material — MIT
 
-## 샘플 디스크에 포함된 원본 자료 — 별도 권리
+The newly written assembly samples, BASIC loaders, API constants, memory configuration,
+and documentation use the MIT terms in [LICENSE](LICENSE).
 
-`disk/take1-samples.dsk`에는 실행을 위해 다음 원본 또는 원본에 기반한 자료가 들어 있습니다.
+## Original material on the sample disk — separate rights
 
-- Baudville Take 1의 엔진·사운드·`AC.PTK4`·`SN.TK`·배경·THUNDER RUN 액터.
-- 원본 액터를 좌우 반전하고 1픽셀 시프트한 왼쪽 방향 액터.
-- Abdul of the Nomads의 크랙/인트로 배포본에 포함된 로고·씬 자료.
-- Pronto-DOS 부팅 코드와 DOS 구성 요소.
+`disk/take1-samples.dsk` includes the following original material or material derived from it:
 
-각 자료의 권리는 각각의 권리자에게 있습니다. 변환·재배치·디스크 수록으로 그 권리가
-이 프로젝트에 이전되었다고 표시하지 않으며, 현재 권리자의 재배포 허가가 확인되었다고
-주장하지 않습니다. **원본 자료와 원본 엔진을 결합한 설치기, 디스크 전체는 MIT 적용 대상이 아닙니다.**
+- Baudville Take 1 engine, sound, `AC.PTK4`, `SN.TK`, background, and THUNDER RUN actor.
+- A mirrored, one-pixel-shifted version of the original actor for the left-facing animation.
+- Logo and scene material included in the Abdul of the Nomads cracked/intro distribution.
+- Pronto-DOS boot code and DOS components.
 
-`screenshots/`는 샘플 디스크의 실제 실행 화면이며, 화면에 나타난 원본 아트에도
-해당 권리자의 권리가 적용됩니다. 새로 작성한 소스의 MIT 조건을 이미지에 확대 적용하지 않습니다.
+Rights to these materials remain with their respective rights holders. Conversion, relocation,
+or inclusion on this disk does not transfer those rights to this project. This project does not
+claim that redistribution permission from the current rights holders has been confirmed.
+**The MIT License does not cover the original material, installers containing the original engine, or the disk image as a whole.**
 
-Apple II ROM은 포함하지 않습니다. Take 1 등의 이름은 분석 대상의 식별에 사용합니다.
+`screenshots/` contains actual captures of the sample disk. The original artwork shown in these
+captures remains subject to its respective rights. The MIT terms for the newly written source do not extend to those images.
+
+Apple II ROMs are not included. Names such as Take 1 identify the software being demonstrated.
