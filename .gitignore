@@ -1,0 +1,13 @@
+.DS_Store
+.idea/
+*.swp
+*.swo
+*~
+__pycache__/
+*.o
+*.lst
+*.lbl
+*.bin
+*.zip
+*.bak
+*.bak.dsk
