@@ -39,6 +39,14 @@ Apple II 에뮬레이터 또는 실제 Apple II에서 사용합니다. 언어 �
 |---|---|
 | ![오른쪽으로 달리는 액터](screenshots/joystick-right.png) | ![왼쪽으로 달리는 액터](screenshots/joystick-left.png) |
 
+## 캐릭터 애니메이션 출처
+
+달리는 캐릭터는 Take 1의 “Back” 샘플 디스크(`Take 1 - Back.dsk`)에 들어 있는
+`AC.THUNDER RUN`에서 가져왔습니다. 원본 액터에는 12개 포즈와 `RUN RIGHT` 액션이 있습니다.
+오른쪽 방향은 원본 액터를 사용합니다. 왼쪽 방향의 `AC.THUNDER LEFT`는 해당 포즈를
+좌우 반전하고, Apple II 컬러 위상을 보정하도록 오른쪽으로 1픽셀 시프트해 만들었습니다.
+캐릭터 그림 자체의 출처는 원본 Take 1 샘플 자료입니다.
+
 ## 소스코드
 
 - [SN 재생 어셈블리](samples/scene/sn_sample.s) · [BASIC 로더](samples/scene/hello.bas)
